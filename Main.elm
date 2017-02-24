@@ -1,9 +1,10 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (..)
 
 
+-- import Html.Events exposing (onClick)
 -- TYPES
 
 
@@ -116,11 +117,42 @@ update msg model =
 -- VIEW
 
 
+viewSong : Song -> Html Msg
+viewSong song =
+    tr []
+        [ td [] [ text song.name ]
+        , td [] [ text song.description ]
+        , td [] [ text song.key ]
+        , td [] [ text (toString song.tempo) ]
+        , td [] [ text song.artist.name ]
+        ]
+
+
+viewSongTable : List Song -> Html Msg
+viewSongTable songs =
+    table [ class "table table-striped" ]
+        [ thead []
+            [ tr []
+                [ th [] [ text "Title" ]
+                , th [] [ text "Description" ]
+                , th [] [ text "Key" ]
+                , th [] [ text "Tempo" ]
+                , th [] [ text "Artist" ]
+                ]
+            ]
+        , tbody [] (List.map viewSong songs)
+        ]
+
+
 view : Model -> Html Msg
 view model =
-    div [] [ text "Starter Page!" ]
+    div [ class "container-fluid" ]
+        [ h2 [] [ text "Song Catalog!" ]
+        , viewSongTable model.songs
+        ]
 
 
+main : Program Never Model Msg
 main =
     Html.beginnerProgram
         { view = view
