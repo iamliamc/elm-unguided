@@ -2,10 +2,16 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 
 
--- import Html.Events exposing (onClick)
 -- TYPES
+
+
+type DisplayState
+    = DisplayNone
+    | DisplayArtist Artist
+    | DisplayComments (List Comment)
 
 
 type alias Comment =
@@ -36,11 +42,13 @@ type alias Instrument =
     { name : String
     , origin : String
     , age : Int
+    , picture : String
     }
 
 
 type alias Model =
     { songs : List Song
+    , displayState : DisplayState
     }
 
 
@@ -53,6 +61,7 @@ initialGuitar =
     { name = "Guitar"
     , origin = "Japan"
     , age = 16
+    , picture = "./imgs/strat.jpg"
     }
 
 
@@ -61,6 +70,7 @@ initialPiano =
     { name = "Rhodes"
     , origin = "USA"
     , age = 34
+    , picture = ".imgs/rhodes.jpg"
     }
 
 
@@ -95,6 +105,7 @@ initialSongs =
 initialModel : Model
 initialModel =
     { songs = initialSongs
+    , displayState = DisplayNone
     }
 
 
@@ -104,6 +115,7 @@ initialModel =
 
 type Msg
     = DoNothing
+    | ShowArtistDetails DisplayState
 
 
 update : Msg -> Model -> Model
@@ -112,9 +124,46 @@ update msg model =
         DoNothing ->
             model
 
+        ShowArtistDetails artistState ->
+            ({ model | displayState = artistState })
+
 
 
 -- VIEW
+
+
+viewDetails : Model -> Html Msg
+viewDetails model =
+    let
+        header displayType =
+            h3 [] [ text displayType ]
+    in
+        case model.displayState of
+            DisplayArtist artist ->
+                div []
+                    [ header "Artist Information:"
+                    , dl [ class "dl-horizontal" ]
+                        [ dt [] [ text "Name" ]
+                        , dd [] [ text artist.name ]
+                        , dt [] [ text "Label" ]
+                        , dd [] [ text artist.label ]
+                        , dt [] [ text "Age" ]
+                        , dd [] [ text (toString artist.age) ]
+                        , dt [] [ text "Instruments" ]
+                        , dd [] [ text (instruments artist.instruments) ]
+                        ]
+                    ]
+
+            DisplayComments comments ->
+                div [] []
+
+            DisplayNone ->
+                text ""
+
+
+instruments : List Instrument -> String
+instruments instruments =
+    String.join ", " (List.map .name instruments)
 
 
 viewSong : Song -> Html Msg
@@ -125,6 +174,7 @@ viewSong song =
         , td [] [ text song.key ]
         , td [] [ text (toString song.tempo) ]
         , td [] [ text song.artist.name ]
+        , td [] [ button [ class "btn btn-primary", onClick (ShowArtistDetails (DisplayArtist song.artist)) ] [ text "Details" ] ]
         ]
 
 
@@ -138,6 +188,7 @@ viewSongTable songs =
                 , th [] [ text "Key" ]
                 , th [] [ text "Tempo" ]
                 , th [] [ text "Artist" ]
+                , th [] [ text "Show Artist Details" ]
                 ]
             ]
         , tbody [] (List.map viewSong songs)
@@ -149,6 +200,7 @@ view model =
     div [ class "container-fluid" ]
         [ h2 [] [ text "Song Catalog!" ]
         , viewSongTable model.songs
+        , viewDetails model
         ]
 
 

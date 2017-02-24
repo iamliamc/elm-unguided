@@ -8145,6 +8145,346 @@ var _elm_lang$html$Html_Attributes$classList = function (list) {
 };
 var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
 
+var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
+var _elm_lang$html$Html_Events$targetChecked = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'checked',
+			_1: {ctor: '[]'}
+		}
+	},
+	_elm_lang$core$Json_Decode$bool);
+var _elm_lang$html$Html_Events$targetValue = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'value',
+			_1: {ctor: '[]'}
+		}
+	},
+	_elm_lang$core$Json_Decode$string);
+var _elm_lang$html$Html_Events$defaultOptions = _elm_lang$virtual_dom$VirtualDom$defaultOptions;
+var _elm_lang$html$Html_Events$onWithOptions = _elm_lang$virtual_dom$VirtualDom$onWithOptions;
+var _elm_lang$html$Html_Events$on = _elm_lang$virtual_dom$VirtualDom$on;
+var _elm_lang$html$Html_Events$onFocus = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'focus',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onBlur = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'blur',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onSubmitOptions = _elm_lang$core$Native_Utils.update(
+	_elm_lang$html$Html_Events$defaultOptions,
+	{preventDefault: true});
+var _elm_lang$html$Html_Events$onSubmit = function (msg) {
+	return A3(
+		_elm_lang$html$Html_Events$onWithOptions,
+		'submit',
+		_elm_lang$html$Html_Events$onSubmitOptions,
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onCheck = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'change',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetChecked));
+};
+var _elm_lang$html$Html_Events$onInput = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'input',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetValue));
+};
+var _elm_lang$html$Html_Events$onMouseOut = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseout',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseOver = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseover',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseLeave = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseleave',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseEnter = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseenter',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseUp = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseup',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseDown = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mousedown',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onDoubleClick = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'dblclick',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onClick = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'click',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$Options = F2(
+	function (a, b) {
+		return {stopPropagation: a, preventDefault: b};
+	});
+
+var _user$project$Main$instruments = function (instruments) {
+	return A2(
+		_elm_lang$core$String$join,
+		', ',
+		A2(
+			_elm_lang$core$List$map,
+			function (_) {
+				return _.name;
+			},
+			instruments));
+};
+var _user$project$Main$viewDetails = function (model) {
+	var header = function (displayType) {
+		return A2(
+			_elm_lang$html$Html$h3,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(displayType),
+				_1: {ctor: '[]'}
+			});
+	};
+	var _p0 = model.displayState;
+	switch (_p0.ctor) {
+		case 'DisplayArtist':
+			var _p1 = _p0._0;
+			return A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: header('Artist Information:'),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$dl,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('dl-horizontal'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$dt,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Name'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$dd,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(_p1.name),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$dt,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Label'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$dd,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text(_p1.label),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$dt,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Age'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$dd,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text(
+																_elm_lang$core$Basics$toString(_p1.age)),
+															_1: {ctor: '[]'}
+														}),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$dt,
+															{ctor: '[]'},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text('Instruments'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$dd,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html$text(
+																		_user$project$Main$instruments(_p1.instruments)),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}
+				});
+		case 'DisplayComments':
+			return A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{ctor: '[]'});
+		default:
+			return _elm_lang$html$Html$text('');
+	}
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p2 = msg;
+		if (_p2.ctor === 'DoNothing') {
+			return model;
+		} else {
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{displayState: _p2._0});
+		}
+	});
+var _user$project$Main$initialPiano = {name: 'Rhodes', origin: 'USA', age: 34, picture: '.imgs/rhodes.jpg'};
+var _user$project$Main$initialGuitar = {name: 'Guitar', origin: 'Japan', age: 16, picture: './imgs/strat.jpg'};
+var _user$project$Main$initialArtist = {
+	name: 'Cordel',
+	label: 'Not Wrong',
+	age: 26,
+	instruments: {
+		ctor: '::',
+		_0: _user$project$Main$initialGuitar,
+		_1: {
+			ctor: '::',
+			_0: _user$project$Main$initialPiano,
+			_1: {ctor: '[]'}
+		}
+	}
+};
+var _user$project$Main$initialSongs = {
+	ctor: '::',
+	_0: {
+		name: 'End of it All',
+		description: 'Thundercat Rip',
+		key: 'A Major',
+		tempo: 120,
+		artist: _user$project$Main$initialArtist,
+		comments: {ctor: '[]'}
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			name: 'Something\'s Gotta Give',
+			description: 'Holy Holy',
+			key: 'D Minor',
+			tempo: 88,
+			artist: _user$project$Main$initialArtist,
+			comments: {ctor: '[]'}
+		},
+		_1: {ctor: '[]'}
+	}
+};
+var _user$project$Main$Comment = F2(
+	function (a, b) {
+		return {user: a, content: b};
+	});
+var _user$project$Main$Song = F6(
+	function (a, b, c, d, e, f) {
+		return {name: a, description: b, key: c, tempo: d, artist: e, comments: f};
+	});
+var _user$project$Main$Artist = F4(
+	function (a, b, c, d) {
+		return {name: a, label: b, age: c, instruments: d};
+	});
+var _user$project$Main$Instrument = F4(
+	function (a, b, c, d) {
+		return {name: a, origin: b, age: c, picture: d};
+	});
+var _user$project$Main$Model = F2(
+	function (a, b) {
+		return {songs: a, displayState: b};
+	});
+var _user$project$Main$DisplayComments = function (a) {
+	return {ctor: 'DisplayComments', _0: a};
+};
+var _user$project$Main$DisplayArtist = function (a) {
+	return {ctor: 'DisplayArtist', _0: a};
+};
+var _user$project$Main$DisplayNone = {ctor: 'DisplayNone'};
+var _user$project$Main$initialModel = {songs: _user$project$Main$initialSongs, displayState: _user$project$Main$DisplayNone};
+var _user$project$Main$ShowArtistDetails = function (a) {
+	return {ctor: 'ShowArtistDetails', _0: a};
+};
 var _user$project$Main$viewSong = function (song) {
 	return A2(
 		_elm_lang$html$Html$tr,
@@ -8200,7 +8540,35 @@ var _user$project$Main$viewSong = function (song) {
 									_0: _elm_lang$html$Html$text(song.artist.name),
 									_1: {ctor: '[]'}
 								}),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$td,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$button,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$class('btn btn-primary'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onClick(
+														_user$project$Main$ShowArtistDetails(
+															_user$project$Main$DisplayArtist(song.artist))),
+													_1: {ctor: '[]'}
+												}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Details'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
 						}
 					}
 				}
@@ -8275,7 +8643,18 @@ var _user$project$Main$viewSongTable = function (songs) {
 													_0: _elm_lang$html$Html$text('Artist'),
 													_1: {ctor: '[]'}
 												}),
-											_1: {ctor: '[]'}
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$th,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Show Artist Details'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
 										}
 									}
 								}
@@ -8314,76 +8693,16 @@ var _user$project$Main$view = function (model) {
 			_1: {
 				ctor: '::',
 				_0: _user$project$Main$viewSongTable(model.songs),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: _user$project$Main$viewDetails(model),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		return model;
-	});
-var _user$project$Main$initialPiano = {name: 'Rhodes', origin: 'USA', age: 34};
-var _user$project$Main$initialGuitar = {name: 'Guitar', origin: 'Japan', age: 16};
-var _user$project$Main$initialArtist = {
-	name: 'Cordel',
-	label: 'Not Wrong',
-	age: 26,
-	instruments: {
-		ctor: '::',
-		_0: _user$project$Main$initialGuitar,
-		_1: {
-			ctor: '::',
-			_0: _user$project$Main$initialPiano,
-			_1: {ctor: '[]'}
-		}
-	}
-};
-var _user$project$Main$initialSongs = {
-	ctor: '::',
-	_0: {
-		name: 'End of it All',
-		description: 'Thundercat Rip',
-		key: 'A Major',
-		tempo: 120,
-		artist: _user$project$Main$initialArtist,
-		comments: {ctor: '[]'}
-	},
-	_1: {
-		ctor: '::',
-		_0: {
-			name: 'Something\'s Gotta Give',
-			description: 'Holy Holy',
-			key: 'D Minor',
-			tempo: 88,
-			artist: _user$project$Main$initialArtist,
-			comments: {ctor: '[]'}
-		},
-		_1: {ctor: '[]'}
-	}
-};
-var _user$project$Main$initialModel = {songs: _user$project$Main$initialSongs};
 var _user$project$Main$main = _elm_lang$html$Html$beginnerProgram(
 	{view: _user$project$Main$view, model: _user$project$Main$initialModel, update: _user$project$Main$update})();
-var _user$project$Main$Comment = F2(
-	function (a, b) {
-		return {user: a, content: b};
-	});
-var _user$project$Main$Song = F6(
-	function (a, b, c, d, e, f) {
-		return {name: a, description: b, key: c, tempo: d, artist: e, comments: f};
-	});
-var _user$project$Main$Artist = F4(
-	function (a, b, c, d) {
-		return {name: a, label: b, age: c, instruments: d};
-	});
-var _user$project$Main$Instrument = F3(
-	function (a, b, c) {
-		return {name: a, origin: b, age: c};
-	});
-var _user$project$Main$Model = function (a) {
-	return {songs: a};
-};
 var _user$project$Main$DoNothing = {ctor: 'DoNothing'};
 
 var Elm = {};
