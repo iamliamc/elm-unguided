@@ -8260,6 +8260,43 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _user$project$Main$viewComment = function (comment) {
+	return A2(
+		_elm_lang$html$Html$tr,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$td,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(comment.user),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$td,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(comment.content),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Main$viewComments = function (comments) {
+	return _elm_lang$core$Native_Utils.eq(
+		comments,
+		{ctor: '[]'}) ? {
+		ctor: '::',
+		_0: _elm_lang$html$Html$text('Currently No Comments for this Song'),
+		_1: {ctor: '[]'}
+	} : A2(_elm_lang$core$List$map, _user$project$Main$viewComment, comments);
+};
 var _user$project$Main$instruments = function (instruments) {
 	return A2(
 		_elm_lang$core$String$join,
@@ -8271,6 +8308,289 @@ var _user$project$Main$instruments = function (instruments) {
 			},
 			instruments));
 };
+var _user$project$Main$primaryButton = F2(
+	function (msg, name) {
+		return A2(
+			_elm_lang$html$Html$button,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('btn btn-primary'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Events$onClick(msg),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(name),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Main$clearCommentEntries = function (model) {
+	return _elm_lang$core$Native_Utils.update(
+		model,
+		{newCommentContent: '', newCommentUser: ''});
+};
+var _user$project$Main$initialPiano = {name: 'Rhodes', origin: 'USA', age: 34, picture: '.imgs/rhodes.jpg'};
+var _user$project$Main$artist2 = {
+	name: 'Kikep',
+	label: 'Not Wrong',
+	age: 26,
+	instruments: {
+		ctor: '::',
+		_0: _user$project$Main$initialPiano,
+		_1: {ctor: '[]'}
+	}
+};
+var _user$project$Main$initialGuitar = {name: 'Guitar', origin: 'Japan', age: 16, picture: './imgs/strat.jpg'};
+var _user$project$Main$artist1 = {
+	name: 'Cordel',
+	label: 'Not Wrong',
+	age: 26,
+	instruments: {
+		ctor: '::',
+		_0: _user$project$Main$initialGuitar,
+		_1: {
+			ctor: '::',
+			_0: _user$project$Main$initialPiano,
+			_1: {ctor: '[]'}
+		}
+	}
+};
+var _user$project$Main$initialSongs = {
+	ctor: '::',
+	_0: {
+		name: 'End of it All',
+		description: 'Thundercat Rip',
+		key: 'A Major',
+		tempo: 120,
+		artist: _user$project$Main$artist1,
+		comments: {
+			ctor: '::',
+			_0: {user: 'Cordel', content: 'This song my favorite'},
+			_1: {ctor: '[]'}
+		}
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			name: 'Something\'s Gotta Give',
+			description: 'Holy Holy',
+			key: 'D Minor',
+			tempo: 88,
+			artist: _user$project$Main$artist2,
+			comments: {ctor: '[]'}
+		},
+		_1: {ctor: '[]'}
+	}
+};
+var _user$project$Main$Comment = F2(
+	function (a, b) {
+		return {user: a, content: b};
+	});
+var _user$project$Main$newCommentList = function (model) {
+	return _elm_lang$core$List$singleton(
+		A2(_user$project$Main$Comment, model.newCommentUser, model.newCommentContent));
+};
+var _user$project$Main$addCommentToSong = F2(
+	function (model, song) {
+		return _elm_lang$core$Native_Utils.update(
+			song,
+			{
+				comments: A2(
+					_elm_lang$core$Basics_ops['++'],
+					song.comments,
+					_user$project$Main$newCommentList(model))
+			});
+	});
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'DoNothing':
+				return model;
+			case 'SetCommentUsername':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{newCommentUser: _p0._0});
+			case 'SetCommentContent':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{newCommentContent: _p0._0});
+			case 'ShowArtistDetails':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{displayState: _p0._0});
+			case 'ShowCommentDetails':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{displayState: _p0._0});
+			case 'CancelComment':
+				return _user$project$Main$clearCommentEntries(model);
+			default:
+				var _p1 = _p0._0;
+				var matchSongTuple = A2(
+					_elm_lang$core$List$partition,
+					function (s) {
+						return _elm_lang$core$Native_Utils.eq(s.name, _p1.name);
+					},
+					model.songs);
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						songs: A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$List$singleton(
+								A2(_user$project$Main$addCommentToSong, model, _p1)),
+							_elm_lang$core$Tuple$second(matchSongTuple))
+					});
+		}
+	});
+var _user$project$Main$Song = F6(
+	function (a, b, c, d, e, f) {
+		return {name: a, description: b, key: c, tempo: d, artist: e, comments: f};
+	});
+var _user$project$Main$Artist = F4(
+	function (a, b, c, d) {
+		return {name: a, label: b, age: c, instruments: d};
+	});
+var _user$project$Main$Instrument = F4(
+	function (a, b, c, d) {
+		return {name: a, origin: b, age: c, picture: d};
+	});
+var _user$project$Main$Model = F4(
+	function (a, b, c, d) {
+		return {songs: a, displayState: b, newCommentUser: c, newCommentContent: d};
+	});
+var _user$project$Main$DisplayComments = function (a) {
+	return {ctor: 'DisplayComments', _0: a};
+};
+var _user$project$Main$DisplayArtist = function (a) {
+	return {ctor: 'DisplayArtist', _0: a};
+};
+var _user$project$Main$DisplayNone = {ctor: 'DisplayNone'};
+var _user$project$Main$initialModel = {songs: _user$project$Main$initialSongs, displayState: _user$project$Main$DisplayNone, newCommentUser: '', newCommentContent: ''};
+var _user$project$Main$CancelComment = {ctor: 'CancelComment'};
+var _user$project$Main$SaveComment = function (a) {
+	return {ctor: 'SaveComment', _0: a};
+};
+var _user$project$Main$SetCommentContent = function (a) {
+	return {ctor: 'SetCommentContent', _0: a};
+};
+var _user$project$Main$SetCommentUsername = function (a) {
+	return {ctor: 'SetCommentUsername', _0: a};
+};
+var _user$project$Main$viewAddComment = F2(
+	function (model, song) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('form-group'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$type_('text'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$placeholder('Username'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$value(model.newCommentUser),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$autofocus(true),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$SetCommentUsername),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$br,
+						{ctor: '[]'},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$br,
+							{ctor: '[]'},
+							{ctor: '[]'}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$textarea,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$placeholder('Comment'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$value(model.newCommentContent),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$SetCommentContent),
+											_1: {ctor: '[]'}
+										}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$br,
+									{ctor: '[]'},
+									{ctor: '[]'}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$br,
+										{ctor: '[]'},
+										{ctor: '[]'}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_user$project$Main$primaryButton,
+											_user$project$Main$SaveComment(song),
+											'Save'),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$br,
+												{ctor: '[]'},
+												{ctor: '[]'}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$br,
+													{ctor: '[]'},
+													{ctor: '[]'}),
+												_1: {
+													ctor: '::',
+													_0: A2(_user$project$Main$primaryButton, _user$project$Main$CancelComment, 'Cancel'),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			});
+	});
 var _user$project$Main$viewDetails = function (model) {
 	var header = function (displayType) {
 		return A2(
@@ -8282,10 +8602,10 @@ var _user$project$Main$viewDetails = function (model) {
 				_1: {ctor: '[]'}
 			});
 	};
-	var _p0 = model.displayState;
-	switch (_p0.ctor) {
+	var _p2 = model.displayState;
+	switch (_p2.ctor) {
 		case 'DisplayArtist':
-			var _p1 = _p0._0;
+			var _p3 = _p2._0;
 			return A2(
 				_elm_lang$html$Html$div,
 				{ctor: '[]'},
@@ -8318,7 +8638,7 @@ var _user$project$Main$viewDetails = function (model) {
 										{ctor: '[]'},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text(_p1.name),
+											_0: _elm_lang$html$Html$text(_p3.name),
 											_1: {ctor: '[]'}
 										}),
 									_1: {
@@ -8338,7 +8658,7 @@ var _user$project$Main$viewDetails = function (model) {
 												{ctor: '[]'},
 												{
 													ctor: '::',
-													_0: _elm_lang$html$Html$text(_p1.label),
+													_0: _elm_lang$html$Html$text(_p3.label),
 													_1: {ctor: '[]'}
 												}),
 											_1: {
@@ -8359,7 +8679,7 @@ var _user$project$Main$viewDetails = function (model) {
 														{
 															ctor: '::',
 															_0: _elm_lang$html$Html$text(
-																_elm_lang$core$Basics$toString(_p1.age)),
+																_elm_lang$core$Basics$toString(_p3.age)),
 															_1: {ctor: '[]'}
 														}),
 													_1: {
@@ -8380,7 +8700,7 @@ var _user$project$Main$viewDetails = function (model) {
 																{
 																	ctor: '::',
 																	_0: _elm_lang$html$Html$text(
-																		_user$project$Main$instruments(_p1.instruments)),
+																		_user$project$Main$instruments(_p3.instruments)),
 																	_1: {ctor: '[]'}
 																}),
 															_1: {ctor: '[]'}
@@ -8396,92 +8716,81 @@ var _user$project$Main$viewDetails = function (model) {
 					}
 				});
 		case 'DisplayComments':
+			var _p4 = _p2._0;
 			return A2(
 				_elm_lang$html$Html$div,
 				{ctor: '[]'},
-				{ctor: '[]'});
+				{
+					ctor: '::',
+					_0: header(
+						A2(_elm_lang$core$Basics_ops['++'], 'Comments for ', _p4.name)),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$table,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('table'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$thead,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$tr,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$th,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Username'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$th,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Comment'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}
+											}),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$tbody,
+										{ctor: '[]'},
+										_user$project$Main$viewComments(_p4.comments)),
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(_user$project$Main$viewAddComment, model, _p4),
+							_1: {ctor: '[]'}
+						}
+					}
+				});
 		default:
 			return _elm_lang$html$Html$text('');
 	}
 };
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p2 = msg;
-		if (_p2.ctor === 'DoNothing') {
-			return model;
-		} else {
-			return _elm_lang$core$Native_Utils.update(
-				model,
-				{displayState: _p2._0});
-		}
-	});
-var _user$project$Main$initialPiano = {name: 'Rhodes', origin: 'USA', age: 34, picture: '.imgs/rhodes.jpg'};
-var _user$project$Main$initialGuitar = {name: 'Guitar', origin: 'Japan', age: 16, picture: './imgs/strat.jpg'};
-var _user$project$Main$initialArtist = {
-	name: 'Cordel',
-	label: 'Not Wrong',
-	age: 26,
-	instruments: {
-		ctor: '::',
-		_0: _user$project$Main$initialGuitar,
-		_1: {
-			ctor: '::',
-			_0: _user$project$Main$initialPiano,
-			_1: {ctor: '[]'}
-		}
-	}
+var _user$project$Main$ShowCommentDetails = function (a) {
+	return {ctor: 'ShowCommentDetails', _0: a};
 };
-var _user$project$Main$initialSongs = {
-	ctor: '::',
-	_0: {
-		name: 'End of it All',
-		description: 'Thundercat Rip',
-		key: 'A Major',
-		tempo: 120,
-		artist: _user$project$Main$initialArtist,
-		comments: {ctor: '[]'}
-	},
-	_1: {
-		ctor: '::',
-		_0: {
-			name: 'Something\'s Gotta Give',
-			description: 'Holy Holy',
-			key: 'D Minor',
-			tempo: 88,
-			artist: _user$project$Main$initialArtist,
-			comments: {ctor: '[]'}
-		},
-		_1: {ctor: '[]'}
-	}
-};
-var _user$project$Main$Comment = F2(
-	function (a, b) {
-		return {user: a, content: b};
-	});
-var _user$project$Main$Song = F6(
-	function (a, b, c, d, e, f) {
-		return {name: a, description: b, key: c, tempo: d, artist: e, comments: f};
-	});
-var _user$project$Main$Artist = F4(
-	function (a, b, c, d) {
-		return {name: a, label: b, age: c, instruments: d};
-	});
-var _user$project$Main$Instrument = F4(
-	function (a, b, c, d) {
-		return {name: a, origin: b, age: c, picture: d};
-	});
-var _user$project$Main$Model = F2(
-	function (a, b) {
-		return {songs: a, displayState: b};
-	});
-var _user$project$Main$DisplayComments = function (a) {
-	return {ctor: 'DisplayComments', _0: a};
-};
-var _user$project$Main$DisplayArtist = function (a) {
-	return {ctor: 'DisplayArtist', _0: a};
-};
-var _user$project$Main$DisplayNone = {ctor: 'DisplayNone'};
-var _user$project$Main$initialModel = {songs: _user$project$Main$initialSongs, displayState: _user$project$Main$DisplayNone};
 var _user$project$Main$ShowArtistDetails = function (a) {
 	return {ctor: 'ShowArtistDetails', _0: a};
 };
@@ -8496,7 +8805,24 @@ var _user$project$Main$viewSong = function (song) {
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text(song.name),
+					_0: A2(
+						_elm_lang$html$Html$a,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$href('#'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(
+									_user$project$Main$ShowCommentDetails(
+										_user$project$Main$DisplayComments(song))),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(song.name),
+							_1: {ctor: '[]'}
+						}),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
@@ -8696,7 +9022,19 @@ var _user$project$Main$view = function (model) {
 				_1: {
 					ctor: '::',
 					_0: _user$project$Main$viewDetails(model),
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									_elm_lang$core$Basics$toString(model)),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		});

@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 
 
 -- TYPES
@@ -11,7 +11,7 @@ import Html.Events exposing (onClick)
 type DisplayState
     = DisplayNone
     | DisplayArtist Artist
-    | DisplayComments (List Comment)
+    | DisplayComments Song
 
 
 type alias Comment =
@@ -49,6 +49,8 @@ type alias Instrument =
 type alias Model =
     { songs : List Song
     , displayState : DisplayState
+    , newCommentUser : String
+    , newCommentContent : String
     }
 
 
@@ -74,12 +76,21 @@ initialPiano =
     }
 
 
-initialArtist : Artist
-initialArtist =
+artist1 : Artist
+artist1 =
     { name = "Cordel"
     , label = "Not Wrong"
     , age = 26
     , instruments = [ initialGuitar, initialPiano ]
+    }
+
+
+artist2 : Artist
+artist2 =
+    { name = "Kikep"
+    , label = "Not Wrong"
+    , age = 26
+    , instruments = [ initialPiano ]
     }
 
 
@@ -89,14 +100,14 @@ initialSongs =
       , description = "Thundercat Rip"
       , key = "A Major"
       , tempo = 120
-      , artist = initialArtist
-      , comments = []
+      , artist = artist1
+      , comments = [ { user = "Cordel", content = "This song my favorite" } ]
       }
     , { name = "Something's Gotta Give"
       , description = "Holy Holy"
       , key = "D Minor"
       , tempo = 88
-      , artist = initialArtist
+      , artist = artist2
       , comments = []
       }
     ]
@@ -106,6 +117,8 @@ initialModel : Model
 initialModel =
     { songs = initialSongs
     , displayState = DisplayNone
+    , newCommentUser = ""
+    , newCommentContent = ""
     }
 
 
@@ -116,6 +129,11 @@ initialModel =
 type Msg
     = DoNothing
     | ShowArtistDetails DisplayState
+    | ShowCommentDetails DisplayState
+    | SetCommentUsername String
+    | SetCommentContent String
+    | SaveComment Song
+    | CancelComment
 
 
 update : Msg -> Model -> Model
@@ -124,8 +142,43 @@ update msg model =
         DoNothing ->
             model
 
+        SetCommentUsername value ->
+            ({ model | newCommentUser = value })
+
+        SetCommentContent value ->
+            ({ model | newCommentContent = value })
+
         ShowArtistDetails artistState ->
             ({ model | displayState = artistState })
+
+        ShowCommentDetails commentState ->
+            ({ model | displayState = commentState })
+
+        CancelComment ->
+            clearCommentEntries model
+
+        -- user partition to get the song we are editing from the model, update that song's comment list join the two list of songs and put them back on the model
+        SaveComment song ->
+            let
+                matchSongTuple =
+                    List.partition (\s -> s.name == song.name) model.songs
+            in
+                ({ model | songs = ((List.singleton (addCommentToSong model song)) ++ (Tuple.second matchSongTuple)) })
+
+
+addCommentToSong : Model -> Song -> Song
+addCommentToSong model song =
+    ({ song | comments = (song.comments ++ (newCommentList model)) })
+
+
+newCommentList : Model -> List Comment
+newCommentList model =
+    List.singleton (Comment model.newCommentUser model.newCommentContent)
+
+
+clearCommentEntries : Model -> Model
+clearCommentEntries model =
+    ({ model | newCommentContent = "", newCommentUser = "" })
 
 
 
@@ -154,11 +207,57 @@ viewDetails model =
                         ]
                     ]
 
-            DisplayComments comments ->
-                div [] []
+            DisplayComments song ->
+                div []
+                    [ header ("Comments for " ++ song.name)
+                    , table
+                        [ class "table" ]
+                        [ thead []
+                            [ tr []
+                                [ th [] [ text "Username" ]
+                                , th [] [ text "Comment" ]
+                                ]
+                            ]
+                        , tbody [] (viewComments song.comments)
+                        ]
+                    , viewAddComment model song
+                    ]
 
             DisplayNone ->
                 text ""
+
+
+primaryButton : Msg -> String -> Html Msg
+primaryButton msg name =
+    button [ class "btn btn-primary", onClick msg ] [ text name ]
+
+
+viewAddComment : Model -> Song -> Html Msg
+viewAddComment model song =
+    div [ class "form-group" ]
+        [ input
+            [ type_ "text"
+            , placeholder "Username"
+            , value model.newCommentUser
+            , autofocus True
+            , onInput SetCommentUsername
+            ]
+            []
+        , br [] []
+        , br [] []
+        , textarea
+            [ placeholder "Comment"
+            , value model.newCommentContent
+            , onInput SetCommentContent
+            ]
+            []
+        , br [] []
+        , br [] []
+        , primaryButton (SaveComment song) "Save"
+        , br [] []
+        , br [] []
+        , primaryButton CancelComment "Cancel"
+        ]
 
 
 instruments : List Instrument -> String
@@ -166,10 +265,26 @@ instruments instruments =
     String.join ", " (List.map .name instruments)
 
 
+viewComment : Comment -> Html Msg
+viewComment comment =
+    tr []
+        [ td [] [ text comment.user ]
+        , td [] [ text comment.content ]
+        ]
+
+
+viewComments : List Comment -> List (Html Msg)
+viewComments comments =
+    if comments == [] then
+        [ text "Currently No Comments for this Song" ]
+    else
+        List.map viewComment comments
+
+
 viewSong : Song -> Html Msg
 viewSong song =
     tr []
-        [ td [] [ text song.name ]
+        [ td [] [ a [ href "#", onClick (ShowCommentDetails (DisplayComments song)) ] [ text song.name ] ]
         , td [] [ text song.description ]
         , td [] [ text song.key ]
         , td [] [ text (toString song.tempo) ]
@@ -201,6 +316,7 @@ view model =
         [ h2 [] [ text "Song Catalog!" ]
         , viewSongTable model.songs
         , viewDetails model
+        , div [] [ text (toString (model)) ]
         ]
 
 
