@@ -12483,11 +12483,6 @@ var _user$project$Main$primaryButton = F2(
 				_1: {ctor: '[]'}
 			});
 	});
-var _user$project$Main$clearCommentEntries = function (model) {
-	return _elm_lang$core$Native_Utils.update(
-		model,
-		{newCommentContent: '', newCommentUser: ''});
-};
 var _user$project$Main$replaceMatching = F2(
 	function (updatedSong, songFromList) {
 		return _elm_lang$core$Native_Utils.eq(updatedSong.name, songFromList.name) ? updatedSong : songFromList;
@@ -12549,9 +12544,10 @@ var _user$project$Main$Comment = F2(
 	function (a, b) {
 		return {user: a, content: b};
 	});
+var _user$project$Main$initialComment = A2(_user$project$Main$Comment, '', '');
 var _user$project$Main$newCommentList = function (model) {
 	return _elm_lang$core$List$singleton(
-		A2(_user$project$Main$Comment, model.newCommentUser, model.newCommentContent));
+		A2(_user$project$Main$Comment, model.comment.user, model.comment.content));
 };
 var _user$project$Main$addCommentToSong = F2(
 	function (model, song) {
@@ -12563,41 +12559,6 @@ var _user$project$Main$addCommentToSong = F2(
 					song.comments,
 					_user$project$Main$newCommentList(model))
 			});
-	});
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
-			case 'DoNothing':
-				return model;
-			case 'SetCommentUsername':
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{newCommentUser: _p0._0});
-			case 'SetCommentContent':
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{newCommentContent: _p0._0});
-			case 'ShowArtistDetails':
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{displayState: _p0._0});
-			case 'ShowCommentDetails':
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{displayState: _p0._0});
-			case 'CancelComment':
-				return _user$project$Main$clearCommentEntries(model);
-			default:
-				var commentedSong = A2(_user$project$Main$addCommentToSong, model, _p0._0);
-				var updatedSongList = A2(
-					_elm_lang$core$List$map,
-					_user$project$Main$replaceMatching(commentedSong),
-					model.songs);
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{songs: updatedSongList});
-		}
 	});
 var _user$project$Main$Song = F6(
 	function (a, b, c, d, e, f) {
@@ -12611,18 +12572,61 @@ var _user$project$Main$Instrument = F4(
 	function (a, b, c, d) {
 		return {name: a, origin: b, age: c, picture: d};
 	});
-var _user$project$Main$Model = F4(
-	function (a, b, c, d) {
-		return {songs: a, displayState: b, newCommentUser: c, newCommentContent: d};
+var _user$project$Main$Model = F3(
+	function (a, b, c) {
+		return {songs: a, displayState: b, comment: c};
 	});
 var _user$project$Main$DisplayComments = function (a) {
 	return {ctor: 'DisplayComments', _0: a};
 };
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'DoNothing':
+				return model;
+			case 'SetCommentUsername':
+				var updatedComment = A2(_user$project$Main$Comment, _p0._0, model.comment.content);
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{comment: updatedComment});
+			case 'SetCommentContent':
+				var updatedComment = A2(_user$project$Main$Comment, model.comment.user, _p0._0);
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{comment: updatedComment});
+			case 'ShowArtistDetails':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{displayState: _p0._0});
+			case 'ShowCommentDetails':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{displayState: _p0._0});
+			case 'CancelComment':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{comment: _user$project$Main$initialComment});
+			default:
+				var commentedSong = A2(_user$project$Main$addCommentToSong, model, _p0._0);
+				var updatedSongList = A2(
+					_elm_lang$core$List$map,
+					_user$project$Main$replaceMatching(commentedSong),
+					model.songs);
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						songs: updatedSongList,
+						displayState: _user$project$Main$DisplayComments(commentedSong),
+						comment: _user$project$Main$initialComment
+					});
+		}
+	});
 var _user$project$Main$DisplayArtist = function (a) {
 	return {ctor: 'DisplayArtist', _0: a};
 };
 var _user$project$Main$DisplayNone = {ctor: 'DisplayNone'};
-var _user$project$Main$initialModel = {songs: _user$project$Main$initialSongs, displayState: _user$project$Main$DisplayNone, newCommentUser: '', newCommentContent: ''};
+var _user$project$Main$initialModel = {songs: _user$project$Main$initialSongs, displayState: _user$project$Main$DisplayNone, comment: _user$project$Main$initialComment};
 var _user$project$Main$CancelComment = {ctor: 'CancelComment'};
 var _user$project$Main$SaveComment = function (a) {
 	return {ctor: 'SaveComment', _0: a};
@@ -12654,7 +12658,7 @@ var _user$project$Main$viewAddComment = F2(
 							_0: _elm_lang$html$Html_Attributes$placeholder('Username'),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$value(model.newCommentUser),
+								_0: _elm_lang$html$Html_Attributes$value(model.comment.user),
 								_1: {
 									ctor: '::',
 									_0: _elm_lang$html$Html_Attributes$autofocus(true),
@@ -12689,7 +12693,7 @@ var _user$project$Main$viewAddComment = F2(
 									_0: _elm_lang$html$Html_Attributes$placeholder('Comment'),
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$value(model.newCommentContent),
+										_0: _elm_lang$html$Html_Attributes$value(model.comment.content),
 										_1: {
 											ctor: '::',
 											_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$SetCommentContent),

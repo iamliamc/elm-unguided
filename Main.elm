@@ -49,8 +49,7 @@ type alias Instrument =
 type alias Model =
     { songs : List Song
     , displayState : DisplayState
-    , newCommentUser : String
-    , newCommentContent : String
+    , comment : Comment
     }
 
 
@@ -113,12 +112,16 @@ initialSongs =
     ]
 
 
+initialComment : Comment
+initialComment =
+    Comment "" ""
+
+
 initialModel : Model
 initialModel =
     { songs = initialSongs
     , displayState = DisplayNone
-    , newCommentUser = ""
-    , newCommentContent = ""
+    , comment = initialComment
     }
 
 
@@ -143,10 +146,18 @@ update msg model =
             model
 
         SetCommentUsername value ->
-            ({ model | newCommentUser = value })
+            let
+                updatedComment =
+                    Comment value model.comment.content
+            in
+                ({ model | comment = updatedComment })
 
         SetCommentContent value ->
-            ({ model | newCommentContent = value })
+            let
+                updatedComment =
+                    Comment model.comment.user value
+            in
+                ({ model | comment = updatedComment })
 
         ShowArtistDetails artistState ->
             ({ model | displayState = artistState })
@@ -155,7 +166,7 @@ update msg model =
             ({ model | displayState = commentState })
 
         CancelComment ->
-            clearCommentEntries model
+            ({ model | comment = initialComment })
 
         SaveComment song ->
             let
@@ -165,7 +176,7 @@ update msg model =
                 updatedSongList =
                     List.map (replaceMatching commentedSong) model.songs
             in
-                ({ model | songs = updatedSongList })
+                ({ model | songs = updatedSongList, displayState = (DisplayComments commentedSong), comment = initialComment })
 
 
 replaceMatching : Song -> Song -> Song
@@ -183,15 +194,13 @@ addCommentToSong model song =
 
 newCommentList : Model -> List Comment
 newCommentList model =
-    List.singleton (Comment model.newCommentUser model.newCommentContent)
-
-
-clearCommentEntries : Model -> Model
-clearCommentEntries model =
-    ({ model | newCommentContent = "", newCommentUser = "" })
+    List.singleton (Comment model.comment.user model.comment.content)
 
 
 
+-- clearCommentEntries : Model -> Model
+-- clearCommentEntries model =
+--     ({ model | newCommentContent = "", newCommentUser = "" })
 -- VIEW
 
 
@@ -248,7 +257,7 @@ viewAddComment model song =
         [ input
             [ type_ "text"
             , placeholder "Username"
-            , value model.newCommentUser
+            , value model.comment.user
             , autofocus True
             , onInput SetCommentUsername
             ]
@@ -257,7 +266,7 @@ viewAddComment model song =
         , br [] []
         , textarea
             [ placeholder "Comment"
-            , value model.newCommentContent
+            , value model.comment.content
             , onInput SetCommentContent
             ]
             []
