@@ -157,13 +157,23 @@ update msg model =
         CancelComment ->
             clearCommentEntries model
 
-        -- user partition to get the song we are editing from the model, update that song's comment list join the two list of songs and put them back on the model
         SaveComment song ->
             let
-                matchSongTuple =
-                    List.partition (\s -> s.name == song.name) model.songs
+                commentedSong =
+                    addCommentToSong model song
+
+                updatedSongList =
+                    List.map (replaceMatching commentedSong) model.songs
             in
-                ({ model | songs = ((List.singleton (addCommentToSong model song)) ++ (Tuple.second matchSongTuple)) })
+                ({ model | songs = updatedSongList })
+
+
+replaceMatching : Song -> Song -> Song
+replaceMatching updatedSong songFromList =
+    if updatedSong.name == songFromList.name then
+        updatedSong
+    else
+        songFromList
 
 
 addCommentToSong : Model -> Song -> Song
